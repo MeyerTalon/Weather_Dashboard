@@ -40,9 +40,9 @@ $(document).ready(function() {
                 var currentHumidity = data.main.humidity;
                 console.log(currentTemp + '\n' + currentWind + '\n' + currentHumidity);
                 $('#city-name').text(city + ' ' + currentDate);
-                $('#current-weather-info').append('<li>Temperature (degrees Fahrenheit): ' + currentTemp + '</li>');
-                $('#current-weather-info').append('<li>Wind Speed: ' + currentWind + ' mph</li>');
-                $('#current-weather-info').append('<li>Humidity: ' + currentHumidity + '%</li>');
+                $('#current-weather-info').append('<li>Temperature: ' + currentTemp + ' \u00B0F</li>');
+                $('#current-weather-info').append('<li>Wind Speed: ' + currentWind + ' MPH</li>');
+                $('#current-weather-info').append('<li>Humidity: ' + currentHumidity + ' %</li>');
             })        
     }
 });
