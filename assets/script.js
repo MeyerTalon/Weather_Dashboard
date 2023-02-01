@@ -1,5 +1,5 @@
 // Talon's Goofy Wacky Weatherboard ;)
-
+// localStorage.clear();
 var APIKey = "4f500407c1b96e4d03821ff2280e8f0a";
 var currentDate = dayjs().format('MM/D/YY');
 var currentDay = parseInt(dayjs().format('DD'));
@@ -10,6 +10,7 @@ var cityLat;
 var cityLon;
 var isDay;
 var cities = [];
+var isCity = true;
 
 if (hour >= 6 && hour < 18) {
     isDay = true;
@@ -36,6 +37,8 @@ function checkConditions(myCondition) {
         return "🌨";
     } else if (myCondition === 'Clouds') {
         return "☁";
+    } else if (myCondition === 'Haze') {
+        return "☁";
     }
 }
 
@@ -44,13 +47,23 @@ $(document).ready(function() {
     getSearchHistory();
 
     $("#search-btn").click(searchCityTemp);
-    $("#search-btn").click(setSearchHistory);
+    // $("#search-btn").click(setSearchHistory);
+    $('.btn-secondary').click(searchCityTemp);
 
     function setSearchHistory() {
 
         var city = $("#city-input").val();
+        if (city === '') {
+            isCity = false;
+        }
+
+        if (!isCity) {
+            return;
+        }
+
         if (cities.length === 0) {
             cities.push(city);
+            // $('#side-bar').append('<button id="city' + 0 + '" class="btn btn-secondary">' + city + '</button>');
             $('#side-bar').append('<button class="btn btn-secondary">' + city + '</button>');
         } else {
             for (var i = 0; i < cities.length; i++) {
@@ -59,11 +72,12 @@ $(document).ready(function() {
                 }
                 if (i === cities.length - 1) {
                     cities.push(city);
+                    // $('#side-bar').append('<button id="city' + cities.length + '" class="btn btn-secondary">' + city + '</button>');
                     $('#side-bar').append('<button class="btn btn-secondary">' + city + '</button>');
                 }
             }
         }
-
+        console.log(cities);
         for (var i = 0; i < cities.length; i++) {
             localStorage.setItem("city" + i, cities[i]);
         }
@@ -77,7 +91,6 @@ $(document).ready(function() {
                 cities[i] = localStorage.getItem('city' + i);
             }
             
-            console.log(cities)
             for (var i = 0; i < cities.length; i++) {
                 $('#side-bar').append('<button class="btn btn-secondary">' + cities[i] + '</button>');
             }
@@ -89,7 +102,6 @@ $(document).ready(function() {
 
         var city;
 
-        console.log(event.target.textContent);
         if (event.target.textContent !== 'Search') {
             city = event.target.textContent;
         } else {
@@ -101,12 +113,15 @@ $(document).ready(function() {
         fetch (currentWeatherURL) 
             .then(function(response) {
                 if (response.status === 404 || response.status === 400) {
+                    isCity = false;
                     window.alert("City not found :( Please enter a valid city name.");
+                } else {
+                    isCity = true;
                 }
                 return response.json();
             })
             .then(function(data) {
-
+                console.log(data);
                 var currentTemp = convertTemp(data.main.temp).toFixed(2);
                 var currentWind = data.wind.speed;
                 var currentHumidity = data.main.humidity;
@@ -122,7 +137,9 @@ $(document).ready(function() {
                 
             })
             .then(searchCityForecast)
-            $('.btn-secondary').click(searchCityTemp);
+            .then(setSearchHistory)
+        // $('#city' + cities.length).click(searchCityTemp);
+        $('.btn-secondary').click(searchCityTemp);
     }
 
     function searchCityForecast() {
