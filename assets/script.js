@@ -1,27 +1,32 @@
 // Talon's Goofy Wacky Weatherboard ;)
 // localStorage.clear();
+// Initilize and declare global vars
 var APIKey = "4f500407c1b96e4d03821ff2280e8f0a";
 var currentDate = dayjs().format('MM/D/YY');
 var currentDay = parseInt(dayjs().format('DD'));
 var hour = parseInt(dayjs().format('H'));
 var numCities = parseInt(localStorage.getItem('numCities'));
 
+// Initilize global vars to be decalared later
 var cityLat;
 var cityLon;
 var isDay;
 var cities = [];
 var isCity = true;
 
+// Checks the time of day
 if (hour >= 6 && hour < 18) {
     isDay = true;
 } else {
     isDay = false;
 }
 
+// Converts given temp from Kelvin to Fahrenheit
 function convertTemp(myTemp) {
     return ((myTemp -273.15 ) * 1.8) + 32;
 }
 
+// Checks the given weather condition and returns a matching icon
 function checkConditions(myCondition) {
     if(myCondition === 'Clear') {
         if(isDay) {
@@ -42,60 +47,18 @@ function checkConditions(myCondition) {
     }
 }
 
+// Makes sure document is fully loaded before executing
 $(document).ready(function() {
 
+    // Calls getSearchHistory() first
     getSearchHistory();
 
+    // Set click events to searh and city btns
     $("#search-btn").click(searchCityTemp);
-    // $("#search-btn").click(setSearchHistory);
     $('.btn-secondary').click(searchCityTemp);
 
-    function setSearchHistory() {
-
-        var city = $("#city-input").val();
-        if (city === '') {
-            isCity = false;
-        }
-
-        if (!isCity) {
-            return;
-        }
-
-        if (cities.length === 0) {
-            cities.push(city);
-            // $('#side-bar').append('<button id="city' + 0 + '" class="btn btn-secondary">' + city + '</button>');
-            $('#side-bar').append('<button class="btn btn-secondary">' + city + '</button>');
-        } else {
-            for (var i = 0; i < cities.length; i++) {
-                if (city === cities[i]) {
-                    break;
-                }
-                if (i === cities.length - 1) {
-                    cities.push(city);
-                    // $('#side-bar').append('<button id="city' + cities.length + '" class="btn btn-secondary">' + city + '</button>');
-                    $('#side-bar').append('<button class="btn btn-secondary">' + city + '</button>');
-                }
-            }
-        }
-        console.log(cities);
-        for (var i = 0; i < cities.length; i++) {
-            localStorage.setItem("city" + i, cities[i]);
-        }
-        localStorage.setItem("numCities", cities.length);
-
-        $("#city-input").val('');
-    }
-
-    function getSearchHistory() {
-            for (var i = 0; i < numCities; i++) {
-                cities[i] = localStorage.getItem('city' + i);
-            }
-            
-            for (var i = 0; i < cities.length; i++) {
-                $('#side-bar').append('<button class="btn btn-secondary">' + cities[i] + '</button>');
-            }
-    }
-
+    
+    // Sets the top white card to the current weather conditions of the city
     function searchCityTemp(event) {
 
         event.preventDefault();
@@ -138,10 +101,14 @@ $(document).ready(function() {
             })
             .then(searchCityForecast)
             .then(setSearchHistory)
-        // $('#city' + cities.length).click(searchCityTemp);
-        $('.btn-secondary').click(searchCityTemp);
+            .then(function() {
+                $('.btn-secondary').off();
+                $('.btn-secondary').click(searchCityTemp);
+            })
+
     }
 
+    // Sets the bottom blue cards the 5 day weather forecast
     function searchCityForecast() {
 
         var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?lat=" + cityLat + "&lon=" + cityLon + "&appid=" + APIKey;
@@ -184,10 +151,51 @@ $(document).ready(function() {
             })
     }
 
+    // Sets the city to local storage and creates the cities btn
+    function setSearchHistory() {
+
+        var city = $("#city-input").val();
+        if (city === '') {
+            isCity = false;
+        }
+
+        if (!isCity) {
+            return;
+        }
+
+        if (cities.length === 0) {
+            cities.push(city);
+            $('#side-bar').append('<button class="btn btn-secondary p-2 m-1">' + city + '</button>');
+        } else {
+            for (var i = 0; i < cities.length; i++) {
+                if (city === cities[i]) {
+                    break;
+                }
+                if (i === cities.length - 1) {
+                    cities.push(city);
+                    $('#side-bar').append('<button class="btn btn-secondary p-2 m-1">' + city + '</button>');
+                }
+            }
+        }
+
+        for (var i = 0; i < cities.length; i++) {
+            localStorage.setItem("city" + i, cities[i]);
+        }
+        localStorage.setItem("numCities", cities.length);
+
+        $("#city-input").val('');
+    }
+
+    // Gets the cities from local storage and creates their btns
+    function getSearchHistory() {
+            for (var i = 0; i < numCities; i++) {
+                cities[i] = localStorage.getItem('city' + i);
+            }
+            
+            for (var i = 0; i < cities.length; i++) {
+                $('#side-bar').append('<button class="btn btn-secondary p-2 m-1">' + cities[i] + '</button>');
+            }
+    }
+
+
 });
-
-
-
-// openweather returns temp in Kelvin
-// farenheit = (K - 273.15) * 1.8 + 32
-// 4, 12, 20, 28, 36
