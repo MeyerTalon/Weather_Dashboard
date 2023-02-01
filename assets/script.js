@@ -1,5 +1,5 @@
 // Talon's Goofy Wacky Weatherboard ;)
-// localStorage.clear();
+
 // Initilize and declare global vars
 var APIKey = "4f500407c1b96e4d03821ff2280e8f0a";
 var currentDate = dayjs().format('MM/D/YY');
