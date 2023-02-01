@@ -71,7 +71,7 @@ $(document).ready(function() {
             city = $("#city-input").val();
         }
 
-        var currentWeatherURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
+        var currentWeatherURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
 
         fetch (currentWeatherURL) 
             .then(function(response) {
@@ -111,7 +111,7 @@ $(document).ready(function() {
     // Sets the bottom blue cards the 5 day weather forecast
     function searchCityForecast() {
 
-        var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?lat=" + cityLat + "&lon=" + cityLon + "&appid=" + APIKey;
+        var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + cityLat + "&lon=" + cityLon + "&appid=" + APIKey;
 
         fetch(forecastURL)
             .then(function(response) {
