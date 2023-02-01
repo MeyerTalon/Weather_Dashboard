@@ -7,4 +7,4 @@ The weather dashboard webpage will tell the user the current weather conditions 
 ![Weatherboard](./assets/WeatherBoardScreenshot.png)
 
 ## Link to Deployed Page
-https://meyertalon.github.io/Calendar/
+https://meyertalon.github.io/Weather_Dashboard/
